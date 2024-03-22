@@ -1,0 +1,39 @@
+Date:
+-----
+
+let dt = new Date(); --- get and set methods
+
+Date.now()
+
+getFullYear();
+getMonth();
+getDay();
+getDate()
+getTime();
+getHours();
+getMinutes();
+getMilliseconds()
+
+
+setFullYear();
+setMonth();
+//Day - cant be set
+setDate()
+setTime();
+setHours();
+setMinutes();
+setMilliseconds()
+
+Time -- return milliseconds from Jan 1st 1970
+
+Date format:
+-------------
+YYYY/MM/DD
+MMM/DD/YYYY
+DD/MM/YYYY
+DD Month YYYY
+
+per day milliseconds = 86400000 (1000*60*60*24)
+
+month, day - is in array position - 0 - Jan / 0 - Sun
+

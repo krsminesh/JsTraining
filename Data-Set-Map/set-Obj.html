@@ -1,0 +1,64 @@
+<!doctype HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>SET Obj</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .col{
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+        .col h5{
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container m-4 mx-auto">
+         Open console
+    </div>
+
+    <script type="text/javascript">
+        var setObj = new Set();
+
+        setObj.add("Minesh");
+        setObj.add(5);
+        setObj.add(true);
+        setObj.add('IT Officer');
+        setObj.add('Chennai');
+
+        var oo = {mob1: 423423423, mob2: 6545445655} 
+
+        setObj.add(oo);
+        
+        console.log(setObj);
+
+        console.log('value 5 --> '+setObj.has(Math.sqrt(25)))
+        console.log('oo const --> '+setObj.has(oo))
+        console.log('removed Chennai --> '+setObj.delete('Chennai'))
+
+        setObj.add("D.C.");
+
+        console.log(setObj);
+        console.log("--------------1----------")
+        for (const item of setObj) {
+            console.log(item);
+        }
+        console.log("--------------2----------")
+        for (const item of setObj.keys()) {
+            console.log(item);
+        }
+        console.log('--------------3---------');
+        setObj.forEach((value) => {
+            console.log(value);
+        });
+
+    </script>
+</body>
+</html>

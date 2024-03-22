@@ -1,0 +1,564 @@
+<!doctype HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Banking</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        body{
+            background-color: #61bee2;
+        }
+        .bold-text{font-weight: 600;}
+        .btn-wrap button{margin-inline: 5px; font-size: 12px; text-transform: uppercase; font-weight: 600;}
+        .container{min-height: calc(100vh - 4em);}
+        .spacer{padding-top: 2em; margin-bottom: 0em; border-bottom: 1px dashed #ccc;}
+        .account-list{height: 400px; overflow-x: hidden; overflow-y: auto ;}
+        .hide{display: none;}
+        #account_list_wrap{margin-inline: 5px;}
+        #account_list_wrap .row:nth-child(even) {
+            background-color: #f1f1f1;
+        }
+        #account_list_wrap .col:last-child button{font-size:12px;}
+        #account_list_wrap::-webkit-scrollbar {
+            width: 5px;
+        }
+        #account_list_wrap .col {
+            max-width: calc(100% / 6);
+        }
+
+        /* Track */
+        #account_list_wrap::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        #account_list_wrap::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        /* Handle on hover */
+        #account_list_wrap::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .modal {
+            background: rgba(0,0,0,.4);
+        }
+        .modal-dialog{
+            max-width: 1140px;
+        }
+        .modal-body{
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            position: relative;
+            animation: rotate 1s linear infinite;
+            display:block;
+            margin: 0 auto;
+        }
+        .badge{
+            background-color: #0071bc;
+            padding: 5px 10px;
+            color: #fff;
+        }
+        .loader::before , .loader::after {
+            content: "";
+            box-sizing: border-box;
+            position: absolute;
+            inset: 0px;
+            border-radius: 50%;
+            border: 5px solid #f2f2f2;
+            animation: prixClipFix 2s linear infinite ;
+        }
+        .loader::after{
+            transform: rotate3d(90, 90, 0, 180deg );
+            border-color: #FF3D00;
+        }
+
+        @keyframes rotate {
+            0%   {transform: rotate(0deg)}
+            100%   {transform: rotate(360deg)}
+        }
+
+        @keyframes prixClipFix {
+            0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+            50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+            75%, 100%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-4 card">
+        <div class="my-4">
+            <h3>Banking Accounts</h3>
+        </div>
+        <div class="row bold-text mb-1">
+            <div class="col">Account Number</div>
+            <div class="col">Account Name</div>
+            <div class="col">Account Branch</div>
+            <div class="col">Account IFSC</div>
+            <div class="col">Account Balance</div>
+            <div class="col">Actions</div>
+        </div>        
+        <div class="row ">
+            <div class="col"><input type="text" class="form-control" id="acc_number" /></div>
+            <div class="col"><input type="text" class="form-control" id="acc_name" /></div>
+            <div class="col"><input type="text" class="form-control" id="acc_branch" /></div>
+            <div class="col"><input type="text" class="form-control" id="acc_ifsc" /></div>
+            <div class="col"><input type="text" class="form-control" id="acc_bal" /></div>
+            <div class="col">
+                <div class="btn-wrap">
+                    <button class="btn btn-primary" onclick="ObjCallApi.checkAddAcc()">Add Account</button>
+                </div>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="my-4">
+            <h3>Account List</h3>
+        </div>
+        <div class="account-list" id="account_list_wrap">
+            <p class="text-center" id="load_txt">
+                <span class="loader"></span>
+            </p>
+        </div>
+
+        <div class="spacer"></div>
+        <div class="my-4">
+            <h3>Net Worth</h3>
+        </div>
+        <div class="row mb-4">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col text-right"><b>Net Worth:</b></div>
+            <div class="col"><div class="badge" id="netWorth"></div></div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <div class="modal fade " id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateModalLabel">Update Account Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ObjCallApi.closeUpdateModal()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row ">
+                    <div class="col">
+                        <label>Account Number:</label><br/>
+                        <input type="text" class="form-control" id="up_acc_number" />
+                    </div>
+                    <div class="col">
+                        <label>Account Name:</label><br/>
+                        <input type="text" class="form-control" id="up_acc_name" />
+                    </div>
+                    <div class="col">
+                        <label>Account Branch:</label><br/>
+                        <input type="text" class="form-control" id="up_acc_branch" />
+                    </div>
+                    <div class="col">
+                        <label>Account IFSC:</label><br/>
+                        <input type="text" class="form-control" id="up_acc_ifsc" />
+                    </div>
+                    <div class="col">
+                        <label>Account Balence:</label><br/>
+                        <input type="text" class="form-control" id="up_acc_bal" />
+                    </div>                    
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ObjCallApi.closeUpdateModal()">Close</button>
+              <button type="button" class="btn btn-primary" id="updateDataBtn" onclick="ObjCallApi.updateAccountData(this.getAttribute('data-id'))" data-id>Update Account</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script>
+        //https://retoolapi.dev/zddNlk/data
+
+        var dispAccountList = document.getElementById('account_list_wrap');
+        var updateModal = document.getElementById('updateModal');
+        //var updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
+        var isAddAccount= true;
+        ///var bankAccountList = [];
+        var bankAccountInduvidual;        
+        
+
+        var acc_number = document.getElementById('acc_number');
+        var acc_name = document.getElementById('acc_name');
+        var acc_branch = document.getElementById('acc_branch');
+        var acc_ifsc = document.getElementById('acc_ifsc');
+        var acc_bal = document.getElementById('acc_bal');
+        var load_txt = document.getElementById('load_txt');
+
+        var up_acc_number = document.getElementById('up_acc_number');
+        var up_acc_name = document.getElementById('up_acc_name');
+        var up_acc_branch = document.getElementById('up_acc_branch');
+        var up_acc_ifsc = document.getElementById('up_acc_ifsc');
+        var up_acc_bal = document.getElementById('up_acc_bal');
+        var updateDataBtn = document.getElementById('updateDataBtn');
+
+        
+
+        acc_number.focus();
+
+        class AccountAPIList{
+
+            calcNetWorth(netAccBal){
+                document.getElementById('netWorth').innerHTML = netAccBal;
+            }
+
+            validateFields(valType){
+                var numberPattern = /^[0-9]+$/; 
+                if(valType == "addAccount"){
+                    if(acc_number.value == '' && acc_name.value == '' && acc_branch.value == '' && acc_ifsc.value == '' && acc_bal.value == ''){
+                        alert('Enter all fields');
+                        return false
+                    }
+                    else{
+                        if(numberPattern.test(acc_number.value) && numberPattern.test(acc_bal.value)){
+                            return true
+                        }
+                        else{
+                            alert("Enter numbers in both Account Number and Account Balance field")
+                        }
+                    }
+                }
+                else{
+                    if(up_acc_number.value == '' && up_acc_name.value == '' && up_.value == '' && up_acc_ifsc.value == '' && up_acc_bal.value == ''){
+                        alert('Enter all fields');
+                        return false
+                    }
+                    else{
+                        if(numberPattern.test(acc_number.value) && numberPattern.test(acc_bal.value)){
+                            return true
+                        }
+                        else{
+                            alert("Enter numbers in both Account Number and Account Balance field")
+                        }
+                    }
+                }
+                
+                    
+            }
+
+            resetFields(){
+                acc_number.value ="";
+                acc_name.value ="";
+                acc_branch.value =""; 
+                acc_ifsc.value =""; 
+                acc_bal.value =""; 
+                
+                up_acc_number.value ="";
+                up_acc_name.value ="";
+                up_acc_branch.value =""; 
+                up_acc_ifsc.value =""; 
+                up_acc_bal.value =""; 
+            }
+
+            checkAddAcc(){
+                isAddAccount = true;
+                this.addAccount();
+            }
+
+            constructAccListAfterActivity(accounts){
+                if(accounts.length > 0){
+                    let displayHtml ="";
+                    let accBal = 0;
+                    accounts.forEach(element => {
+                        accBal += element.AccountBalance;
+                        displayHtml += '<div class="row p-3">' ;
+                        displayHtml += '<div class="col">' + element.AccountNumber + '</div>';
+                        displayHtml += '<div class="col">' + element.AccountName + '</div>';
+                        displayHtml += '<div class="col">' + element.AccountBranch + '</div>';
+                        displayHtml += '<div class="col">' + element.AccountIFSC + '</div>';
+                        displayHtml += '<div class="col">' + element.AccountBalance + '</div>';
+                        displayHtml +=   '<div class="col">' +
+                                        '<button type="button" class="btn btn-warning" onclick="ObjCallApi.getDateToUpdateDatafunction('+ element.id +')">Update</button>' + '&nbsp;&nbsp;' +
+                                        '<button type="button" class="btn btn-danger" onclick="ObjCallApi.deleteDatafunction('+ element.id +')">Delete</button>' +
+                                    '</div>' +
+                                '</div>'; 
+                    })
+                    dispAccountList.innerHTML = displayHtml;
+                    acc_number.focus();
+                    this.calcNetWorth(accBal);
+                }
+                else{
+                    alert('No records found');
+                }                    
+            }
+            
+            addAccount(addingData){
+                let fieldValid = this.validateFields('addAccount');
+                if(isAddAccount){
+                    if(fieldValid){
+                        bankAccountInduvidual = {
+                            'AccountIFSC':Number(acc_ifsc.value),
+                            'AccountName': acc_name.value,
+                            'AccountBranch':acc_branch.value,
+                            'AccountNumber': Number(acc_number.value),
+                            'AccountBalance':Number(acc_bal.value)
+                        }
+                        this.postDataFunction(bankAccountInduvidual);    
+                        
+                        dispAccountList.innerHTML = '<p class="text-center" id="load_txt"><span class="loader"></span></p>';
+
+                        this.resetFields();
+                    }
+                }
+                else{
+                    console.log("do nothing")
+                }            
+                
+            }
+
+            closeUpdateModal(){
+                updateModal.classList.remove('show');
+                updateModal.classList.remove('in');
+                updateModal.classList.remove('d-block');
+                this.resetFields();
+            }
+
+            putDataToUpdateModal(toUpdateData){
+                console.log(toUpdateData);
+                up_acc_number.value = toUpdateData.AccountNumber;
+                up_acc_name.value = toUpdateData.AccountName;
+                up_acc_branch.value = toUpdateData.AccountBranch;
+                up_acc_ifsc.value = toUpdateData.AccountIFSC;
+                up_acc_bal.value = toUpdateData.AccountBalance;
+
+                updateDataBtn.setAttribute("data-id", toUpdateData.id)
+
+                updateModal.classList.add('show');
+                updateModal.classList.add('in');
+                updateModal.classList.add('d-block');
+            }
+
+
+            postDataFunction(postingData){
+
+                fetch('https://retoolapi.dev/zddNlk/data',{
+                    'method':'POST',
+                    'body':JSON.stringify(postingData),
+                    'headers':{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (!response.ok) {
+                        console.log('Has some network error');
+                    }
+                    return response.json();                    
+                })
+                .then(data => {
+                    console.log('--------Post API Success:--------> ', data);
+                    this.getDataFunction();
+                    alert('Account added successfully');                    
+                })
+                .catch(error => {
+                    console.error('--------Post API Error:--------->', error);
+                });
+            }
+
+
+            getDataFunction(){
+                fetch('https://retoolapi.dev/zddNlk/data',{
+                    'method':'GET',
+                    'headers':{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (!response.ok) {
+                        console.log('Has some network error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('--------Get API Success:--------> ', data);                    
+                    this.constructAccListAfterActivity(data);
+                })
+                .catch(error => {
+                    console.error('--------Get API Error:--------->', error);
+                });
+            }
+
+            updateAccountData(updateItemId){
+                //let fieldValid = this.validateFields('upAccount');
+
+                //if(fieldValid){
+                    bankAccountInduvidual = {
+                        'AccountIFSC':Number(up_acc_ifsc.value),
+                        'AccountName': up_acc_name.value,
+                        'AccountBranch':up_acc_branch.value,
+                        'AccountNumber': Number(up_acc_number.value),
+                        'AccountBalance':Number(up_acc_bal.value)
+                    }
+
+                    fetch('https://retoolapi.dev/zddNlk/data/'+updateItemId,{
+                        'method':'PUT',
+                        'body':JSON.stringify(bankAccountInduvidual),
+                        'headers':{
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.log('Has some network error');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('--------Update API Success:--------> ', data);
+                        dispAccountList.innerHTML = '<p class="text-center" id="load_txt"><span class="loader"></span></p>';
+                        this.getDataFunction();
+                        this.closeUpdateModal();
+                        alert('Account ID: '+updateItemId+ " updated successfully");
+                    })
+                    .catch(error => {
+                        console.error('--------Update API Error:--------->', error);
+                    });
+               // }               
+
+            }
+
+            getDateToUpdateDatafunction(updateItemId){
+                fetch('https://retoolapi.dev/zddNlk/data/'+updateItemId,{
+                    'method':'GET',
+                    'headers':{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (!response.ok) {
+                        console.log('Has some network error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('--------update API Success:--------> ', data);
+                    this.putDataToUpdateModal(data);
+                })
+                .catch(error => {
+                    console.error('--------update API Error:--------->', error);
+                });
+            }
+
+            deleteDatafunction(delItemdId){
+                fetch('https://retoolapi.dev/zddNlk/data/'+delItemdId,{
+                    'method':'DELETE',
+                    'headers':{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (!response.ok) {
+                        console.log('Has some network error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('--------Delete API Success:--------> ', data);
+                    alert("Record ID --"+ delItemdId+" -- Deleted Successfully");
+                    dispAccountList.innerHTML = '<p class="text-center" id="load_txt"><span class="loader"></span></p>';
+                    this.getDataFunction();
+                })
+                .catch(error => {
+                    console.error('--------Delete API Error:--------->', error);
+                });
+            }
+
+            constructor(){
+                console.log("constructor -- Object created successfully")
+            }
+
+        }
+
+        let ObjCallApi = new AccountAPIList();
+        ObjCallApi.getDataFunction();
+
+                
+        // function addAccount(){
+        //     let fieldValid = validateFields();
+        //     if(isAddAccount){
+        //         if(fieldValid){
+        //             bankAccountInduvidual.push(acc_number.value, acc_name.value, acc_branch.value, acc_ifsc.value, acc_bal.value);
+        //             bankAccountList.push(bankAccountInduvidual);
+        //             //console.log(bankAccountInduvidual);
+        //             console.log(bankAccountList);
+        //             bankAccountInduvidual= [];
+
+        //             constructAccListAfterActivity();
+
+        //             resetFields();
+        //         }
+        //     }
+        //     else{
+        //         constructAccListAfterActivity();
+        //     }            
+            
+        // }
+
+        // function validateFields(){
+        //     var numberPattern = /^[0-9]+$/; 
+        //     if(acc_number.value == '' && acc_name.value == '' && acc_branch.value == '' && acc_ifsc.value == '' && acc_bal.value == ''){
+        //         alert('Enter all fields');
+        //         return false
+        //     }
+        //     else{
+        //         if(numberPattern.test(acc_number.value) && numberPattern.test(acc_bal.value)){
+        //             return true
+        //         }
+        //         else{
+        //             alert("Enter numbers in both Account Number and Account Balance field")
+        //         }
+        //     }
+                
+        // }
+
+        // function updateAccount(accRow){
+        //     let uppAcc = bankAccountList[accRow];
+
+        //     acc_number.value = uppAcc[0];
+        //     acc_name.value = uppAcc[1];
+        //     acc_branch.value = uppAcc[2];
+        //     acc_ifsc.value = uppAcc[3];
+        //     acc_bal.value = uppAcc[4];
+            
+        //     deleteAccount(accRow);            
+            
+        // }
+
+        // function deleteAccount(delAccRow){
+        //     isAddAccount = false;
+        //     //console.log(bankAccountList[delAccRow]);
+        //     bankAccountList.splice(delAccRow,1);
+        //     console.log(bankAccountList);
+            
+        //     constructAccListAfterActivity();
+
+        // }
+        //constructAccListAfterActivity();
+        
+
+        // function calcNetWorth(){
+        //     let totalBal = 0;
+        //     debugger;
+        //     for(let accBal of bankAccountList){
+        //         totalBal += Number(accBal[4]);
+        //     }
+        //     document.getElementById('netWorth').innerHTML = totalBal;
+        // }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+OOPS
+
+1. class				==> Data member (Variables) & Member Functions (functions) ==> said by Design, Model, Prototype Template. Etc...
+2. object				==> copy / instence of class - cant do structural change - any change in obj doesnt affect class or other obj - any change in class will reflect in obj
+							constructor() - is the responsible to create a copy - class name & constructor name will be same - new keyword to create obj 
+3. Inheritance			==> multiple inheritance - deprecated - ambiguity - due to crash of rare case of same member function and variable
+4. Absraction			==> hiding original information - short form of message - partial complete & incomplete - you cant create an object - Inherited class from abstract class with 
+							completed member functions has ability to create object. it depends to the multi level inheritance of abstract class
+5. Encapsulation		==> wraping information. - Access Modifies - *private, *protected, *default, *public - member variable and functions
+6. Polymorphism			==> over riding member function with different class or abstract class -- (inheritance)
+							over loading (diff parament) - same function in same class
+7. Exception Handling	==> 
+
+
+in class - there is no need of var or function keyword expt for const.
+Class:
+------
+class Bank{
+	bankName="";
+	branch="";
+	//accountNo = 0;
+	
+	registerBank(){
+	
+	}
+	openBranch(){
+	
+	}
+	
+	closeBranch(){
+	
+	}
+}
+
+
+creating object:
+-----------------
+let bank1 - new Bank();
+
+accessing class member using "." fn:
+----------------------------------------
+bank1.bankName = "ICICI";
+bank1.branck = "tambaram";
+bank1.openBranch();
+bank1.registerBank();
+bank1.closeBranch();
+
+
+
+Inheritance: including the members in Bank, the below new class has extra member function with inherited class
+-------------
+
+ex:1: (single inheritance)
+-----
+class AxisBank extends Bank{
+	accNumber = 0;
+	accName="";
+	accBalance = 0;
+	
+	openAcc(){
+	
+	}
+	closeAcc(){
+	
+	}	
+	withdraw(){
+	
+	}	
+	deposit(){
+	
+	}
+}
+
+ex:2: (mutli level inheritance - hybrid inheritance)
+-----
+
+Class AxisLoan extends AxisBank{
+	checkEligiblity(){
+	
+	}
+	
+	issueLoan(){
+	
+	}
+	
+	payEMI(){
+	
+	}
+	
+}
+
+
+creating object:
+-----------------
+let bankLoan1 = new AxisLoan;
+
+accessing class member using "." fn:
+----------------------------------------
+
+bankLoan1.payEMI();
+bankLoan1.issueLoan();
+bankLoan1.checkEligiblity();
+
+-------------
+bankLoan1.deposit();
+bankLoan1.withdraw();
+bankLoan1.openAcc();
+
+-------------
+bankLoan1.bankName = "ICICI";
+bankLoan1.branck = "tambaram";
+bankLoan1.openBranch();
+bankLoan1.registerBank();
+bankLoan1.closeBranch();
+
+
+
+
+Abstract Class: (not in JS)
+------------------
+
+Abstract class Bank{
+	bankName="";
+	branch="";
+	//accountNo = 0;
+	
+	registerBank(){
+	
+	}
+	openBranch(){
+	
+	}
+	
+	closeBranch(){
+	
+	}
+	
+	openAcc(); // incomplete fn
+	closeAcc();// incomplete fn	
+	
+}
+
+
+interfce: - fully abstract class: - cant create obj 
+----------------------------------------------------
+
+interface RBI{
+	rbiOpenAcc();
+	rbiCloseAcc();
+}
+
+interface WorldBank{
+	loanNumber();
+	disburseLoan();
+}
+
+interface Class: - it forces to complete the interface member
+--------------------------------------------------------------
+Abstract class Bank implements RBI, WorldBank{
+
+}
+class Bank extends Bank{
+
+}
+
+interface acts as a filter:
+---------------------------
+
+RBI rbiBank = new AxisLoan()
+
+rbiBank.rbiOpenAcc()
+rbiBank.rbiCpenAcc()
+
+
+this RBI type can access only the mentioned interface members.
+
+
+Exception handling:
+-------------------
+try
+catch
+throw
+throws
+finally
+
+ex:
+--
+class userDefinedEx extends Exception(){ //exception is a inbuild class in Java
+	classFn(){
+	}
+}
+
+try{
+	if(stock < 0){
+		throw new userDefinedEx();
+	}
+}
+catch(ex){
+	userDefinedEx.classFn();
+}

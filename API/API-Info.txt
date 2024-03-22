@@ -1,0 +1,76 @@
+API - appln (protocol/programming) interface
+
+2 type:
+--------
+monolysim - one client  -- one service -- satyam theatre booking
+Micro Service - one client -- multi service - ticketnew - one client -- satyam,kasi, inox, pheonix, vetri etc
+
+
+ways of API:
+------------
+FE and BE  - same tech stack for both -- (JAVA - JAVA / .NET - .NET) - same pattern
+FE and BE  - diff tech stack for both -- (Ang - .net / .net - Azure/ Ang - python)
+
+REST API:
+--------
+
+
+
+API - http methods: these are created by BE team and hosts a URL which is call endpoint URL
+-------------------------------------------------------------------------------------------
+GET
+POST
+OUT
+DELETE
+
+
+ex api endpoint url: http://xxxxxxxx.com/api/v1/products
+					 (base tenent/api identity /version/ unique endpoint name)
+
+
+
+JSON:
+------------
+
+stingufy -> JSON to stringfy
+
+
+//Request
+fetch(apiURL,{
+			methid: 'POST',
+			body: JSON.stringfy(PostingDATAObj),
+			headers:{
+				'Content-Type': 'application/json ; charset:UTF-8'
+			}
+		}
+)
+//Response
+.then(response) => {
+						if(response.ok){
+							alert('success');
+							return response.json();
+						}
+						else{ 
+							alert('error');
+						}
+					}
+					
+//Validate
+.then(data) => {
+					console.log('DATA ->  '+data)
+				}
+				
+
+//error
+.catch(error) => {
+					console.log('ERROR -> ' +error)
+				 }
+				 
+				
+				
+				
+TASK:
+-----
+reduce no of API calls
+make a simple function to make all api calls
+update - cancel api - and use from array

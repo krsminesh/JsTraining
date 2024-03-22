@@ -1,0 +1,102 @@
+<!doctype HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>OOPs</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .container p{
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container m-4 mx-auto">
+         Open console
+         <br/>
+         <br/>
+         <p id="uName"></p>
+         <p id="uMob"></p>
+         <p id="uAddr"></p>
+
+    </div>
+
+    <script type="text/javascript">
+            var uName = document.getElementById('uName');
+            var uMob = document.getElementById('uMob');
+            var uAddr = document.getElementById('uAddr');
+
+            class User{
+
+                userName = "";
+                mobileNumber = "";
+                address = "";
+
+                getUserDetails(){
+                    console.log('This is get User Details function in user class -- > '+this.userName +' --- '+ this.mobileNumber +' --- '+ this.address);
+                    uName.innerHTML = this.userName;
+                    uMob.innerHTML = this.mobileNumber;
+                    uAddr.innerHTML = this.address;
+                }
+
+                constructor(){
+                    console.log('this is object from user constructor')
+                }
+
+            }
+
+            class UserLogin extends User{
+
+                password = "";
+
+                setPwd(password){
+                    this.password = password
+                    console.log('this is set pwd fn from userlogin class --> '+ this.password)
+                }
+
+                getPwd(){
+                    console.log('this is get pwd from userlogin class extending User Class ---> '+this.password);
+                }
+
+                constructor(){
+                    super(); //calls the parent constructor
+                    console.log("this is object from userlogin constructor");
+                }
+            }
+
+
+            //user class obj starts
+            let user = new User(); //contructor is called once obj is created
+
+            user.userName ="minesh";
+            user.mobileNumber ="986923493423";
+            user.address = "chennai";
+
+            user.getUserDetails();
+
+            //user class obj ends
+
+            //userLogin class obj starts
+
+            let userLogin = new UserLogin();
+
+            userLogin.userName = "L Minesh"
+            userLogin.mobileNumber = "L q9e8qw9e82323"
+            userLogin.address = "L tambaram"
+            userLogin.password = "LL dont tell"
+            userLogin.getPwd();
+            userLogin.setPwd('niagara');
+
+
+            //userLogin class obj ends
+
+
+
+            
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+var = 1 to 1
+arr = 1 to many - possible of  duplicate
+set = 1 to many - no duplicate
+map = 1 to many - has both key and value - here key acts as set
+
+
+let msg ="hello" //(var)
+arr => let fruits =["app","org',"app"] //array -- push/pop functions
+set => let fruits ={"app","org","bana"} // set -- add/remove/get/clear/size/has etc functions -- checks duplicate and replaces //assending order
+map => let fruits ={"name":"mango","price":100, "kg": 5 } //this is called as JSON -- key:value -- set/remove/get/size/delete/clear/has etc functions - sets th latest value from 
+		duplicate key
+
+let jsonVal  =	{
+					name:"asdasd",
+					age:34,
+					office:"chennai",
+					role:"manager",
+					isActive: true,
+					address:{
+						"permanent":"mdu",
+						"current":"chen"
+					},
+					contact:[2323423423432,6765756657567]
+				}
+
+
+string
+number
+boolean
+array
+set
+map
+
+student =	[
+				{"name":"asdsa","age":30,"role":"developer",
+				  "address":{
+								"plot":25,
+								"street":"dasdsads st",
+								"city":"chennai",
+								"pincode":600123
+							},
+					"contact":{
+								"primary":922342823084,
+								"secondary":3231312312123
+							},
+					"permission":["read","write", "edit"],
+					"isElegibleForPromotion" : true
+				},
+				{"name":"gfdhfgjfas","age":32,"role":"developer",
+				  "address":{
+								"plot":15,
+								"street":"89ghfdgs st",
+								"city":"chennai",
+								"pincode":600003
+							},
+					"contact":{
+								"primary":457678756,
+								"secondary":34634535
+							},
+					"permission":["read","write", "edit"],
+					"isElegibleForPromotion" : false
+				}
+			]
+			
+			
+			
+Hash Map (hash code): - this represents the "key" in map:
+---------------------------------------------------------
+table structure with
+
+0 - 10
+1 - 41 --> 51
+2 - 62
+3 - 73
+4 - 44 --> 64

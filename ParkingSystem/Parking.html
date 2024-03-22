@@ -1,0 +1,251 @@
+<!doctype HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Parking</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        #parking_array .col{
+            flex:0 0 20%;
+            max-width: 20%;
+        }
+        #parking_array .col .card{
+            width:100%;height: 40px;
+            margin: 10px;
+        }
+        .card.default{
+            background-color: rgb(10, 131, 10);
+            color:#fff;
+        }
+        .card.occupied{
+            background-color: #ccc;
+            color:#000;
+        }
+        .card.found{
+            background-color: #ff0 !important;
+        }
+        label span{font-weight: 600; display: inline-block;margin-bottom: 5px;}
+        fieldset button{margin-inline: 5px;}
+        .clearfix,.clearfix::after,.clearfix::before{clear:both;display: block; content: "";}
+        .slot{position: relative;}
+        .slot-position{font-size:12px;position: absolute;top:-12px;left:-12px}
+        span.vehicle-no {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="my-4">
+            <h3>Parking Slot</h3>
+            <div class="parking-wrap">
+                <div class="row wrap" id="parking_array">
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">1</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">2</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">3</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">4</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">5</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">6</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">7</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">8</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">9</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card slot default">
+                            <span class="vehicle-no"></span>
+                            <span class="slot-position">10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="my-4">
+            <h3>Activity</h3>
+            <fieldset class="row">
+                <div class="col">                    
+                    <label>
+                        <span>Vehicle number:</span>
+                        <input type="text" class="form-control" id="vehicle_no"/>
+                    </label>
+                    <button class="btn btn-primary" onclick="vehicleEntry()">Entry</button>
+                    <button class="btn btn-primary" onclick="vehicleExit()">Exit</button>
+                    <button class="btn btn-primary" onclick="vehicleSearh()">Search</button>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <script>
+        var vehicle_array = [];
+        var parking_array_wrap = document.getElementById('parking_array');
+        var _entry_vehicle_no = document.getElementById('vehicle_no');
+        
+
+        function vehicleEntry(){
+            let input_vehicle = _entry_vehicle_no.value;
+
+            if(input_vehicle != ""){
+
+                if(vehicle_array.length < 10 && !vehicle_array.includes("")){     
+
+                    if(!vehicle_array.includes(input_vehicle)){
+
+                        vehicle_array.push(input_vehicle);
+                                                
+                        fillTheParkingBox(vehicle_array.length, input_vehicle);
+
+                        let vehicleCard = document.querySelector('#parking_array .col:nth-child('+vehicle_array.length+') .card');
+                        vehicleCard.classList.add('occupied');
+
+                        clearfield();
+                    }
+                    else{
+                        alert('Vehicle number already parked!')
+                    }                    
+                }
+                else{
+                    if(vehicle_array.includes("")){
+
+                        let no_pos = vehicle_array.indexOf("");
+                        vehicle_array[no_pos] = input_vehicle;
+
+                        fillTheParkingBox(no_pos+1, input_vehicle);
+                        let vehicleCard = document.querySelector('#parking_array .col:nth-child('+(no_pos+1)+') .card');
+                        vehicleCard.classList.add('occupied');
+                        
+                        console.log(vehicle_array);
+
+                        clearfield();
+                    }
+                    else{
+                        alert('Parking full!');
+                    }
+                }
+            }
+            else{
+                alert("Please enter vehicle number!");
+            }
+        }
+
+        function vehicleExit(){
+            let input_vehicle = _entry_vehicle_no.value;
+
+            if(input_vehicle != ""){
+                if(vehicle_array.includes(input_vehicle)){
+                    let no_pos = vehicle_array.indexOf(input_vehicle)+1;
+
+                    vehicle_array[vehicle_array.indexOf(input_vehicle)] = "";
+
+                    fillTheParkingBox(no_pos,'');
+                    console.log(vehicle_array);
+                    let vehicleCard = document.querySelector('#parking_array .col:nth-child('+no_pos+') .card');
+                                        
+                    vehicleCard.classList.remove('occupied');
+
+                    clearfield();
+                    
+                }
+                else{
+                    alert('No such vehicle number parked!')
+                }
+            }
+            else{
+                alert("Please enter vehicle number");
+            }
+
+        }
+
+        function vehicleSearh(){
+            let input_vehicle = _entry_vehicle_no.value;
+
+            if(input_vehicle != ""){
+                if(vehicle_array.includes(input_vehicle)){
+                    
+                    let no_pos = vehicle_array.indexOf(input_vehicle)+1;
+
+                    let vehicleCard = document.querySelector('#parking_array .col:nth-child('+no_pos+') .card');
+                    let allVehicleCards = document.querySelectorAll('#parking_array .col .card')
+                    allVehicleCards.forEach(div => {
+                        div.classList.remove('found');
+                    });
+                    
+                    vehicleCard.classList.add('found');
+                                        
+                    clearfield();
+                    
+                }
+                else{
+                    alert('No such vehicle number parked!')
+                }
+            }else{
+                alert("Please enter vehicle number");
+            }
+
+        }
+
+        function clearfield(){
+            _entry_vehicle_no.value="";
+            _entry_vehicle_no.focus();
+        }
+
+
+        function fillTheParkingBox(_item,_value){
+            let vehicleText = document.querySelector('#parking_array .col:nth-child('+_item+') .card .vehicle-no');
+            vehicleText.innerHTML = _value;
+        }
+
+    </script>
+
+</body>
+</html>
