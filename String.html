@@ -1,0 +1,306 @@
+<!doctype HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>String</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .col{
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+        .col h5{
+            margin: 0 0 8px;
+        }
+        .col>div:first-child{width: 100%;}
+        label span{display: block;margin-bottom: 5px;}
+        .btn-wrap button{margin-inline: 5px;}
+        .spacer{padding-top: 2em; margin-bottom: 2em; border-bottom: 1px dashed #ccc;}
+        .card{background-color: aqua; color: black; flex-direction: row;}
+        #outputElement span{font-weight: 600; margin-inline: 5px;}
+        div#outputElement span{word-wrap: break-word; word-break: break-word; max-width: 50%;}
+    </style>
+</head>
+
+<body>
+    <div class="container m-4 mx-auto">
+        <h5 class="mb-4">Custom String</h5>
+        <div class="row m-2">
+            <div class="col-12">
+                <p class="d-flex">
+                    <label class="w-100">
+                        <span>Enter Main String</span>
+                        <input type="text" id="stringField" class="form-control" />
+                    </label>                    
+                </p>
+                <div class="spacer"></div>
+
+                <div class="row align-items-start">
+                    <div class="col">
+                        <div>
+                            <h5>Start/End Validation</h5>
+                            <p>
+                                <label class="w-100">
+                                    <span>Validate String</span>
+                                    <input type="text" id="validateField" class="form-control" />
+                                </label>
+                            </p>
+                            <p class="btn-wrap">
+                                <button type="button" onclick="cusStartWith()" class="btn btn-primary">Check Starts With</button>
+                                <button type="button" onclick="cusEndsWith()" class="btn btn-primary">Check Ends With</button>
+                                <!-- <button type="button" onclick="cusSplit()" class="btn btn-primary">Split</button> -->
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div>
+                            <h5>Pad String</h5>
+                            <p>
+                                <label class="w-100">
+                                    <span>Max Length</span>
+                                    <input type="text" id="maxLenField" class="form-control" />
+                                </label>
+                                <label class="w-100">
+                                    <span>Pad String</span>
+                                    <input type="text" id="padStringField" class="form-control" maxlength="1" />
+                                </label>
+                            </p>
+                            <p class="btn-wrap">
+                                <button type="button" onclick="cusPadStart()" class="btn btn-primary">Pad Starts</button>
+                                <button type="button" onclick="cusPadEnd()" class="btn btn-primary">Pad Ends</button>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div>
+                            <h5>Split String</h5>
+                            <p>
+                                <label class="w-100">
+                                    <span>Split String</span>
+                                    <input type="text" id="splitStringField" class="form-control" />
+                                </label>
+                            </p>
+                            <p class="btn-wrap">
+                                <button type="button" onclick="cusStrSplit()" class="btn btn-primary">Split</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="spacer"></div>
+                
+
+                
+            </div>
+         </div>
+         
+         <div class="spacer"></div>
+
+         <h5>Output</h5>
+         <div class="row">
+            <div class="col-12">
+                <div class="card p-3"  id="outputElement"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var mainString = document.getElementById('stringField');
+        var valString = document.getElementById('validateField');
+        var outputPara = document.getElementById('outputElement');
+
+        var startBoolean  = false;
+        var endBoolean  = false;
+
+
+        var padString = document.getElementById('padStringField');
+        var maxLenCount = document.getElementById('maxLenField');
+
+        var numberPattern = /^[0-9]+$/; 
+
+
+        var splitStrField = document.getElementById('splitStringField');
+
+        
+
+
+        function cusStrSplit(){
+            let mString = mainString.value.toLowerCase();
+            let spString = splitStrField.value;
+
+            if(mString.length>0){
+                if(mString.includes(spString)){
+                    const splitArray = [];
+                    let splitIndex = 0;
+
+                    for (let i = 0; i < mString.length; i++) {
+                        // Check if the current character is the split character or not
+                        if (mString[i] === spString) {
+                            // If the substring is not empty, add it to the splitArray array
+                            if (splitIndex < i) {
+                                splitArray.push(mString.slice(splitIndex, i));
+                            }
+                            // increasing the split index for the next substring
+                            splitIndex = i + 1;
+                        }
+                    }
+                    // Add the last substring if the string doesn't end with the split char
+                    if (splitIndex < mString.length) {
+                        splitArray.push(mString.slice(splitIndex));
+                    }
+
+                    outputPara.innerHTML = 'Split String ---> No match found <span>'+ splitArray +'</span> ';
+                    console.log(splitArray)
+
+                }
+                else{
+                    outputPara.innerHTML = 'Split String ---> <span>'+ mString +'</span> ';
+                }
+
+            }
+            else{
+                alert("Please enter main string")
+            }
+        }
+
+        function cusPadStart(){
+            let mString = mainString.value.toLowerCase();
+            if(mString.length>0){
+                let pString = padString.value.toLowerCase();
+                let maxCount = Number(maxLenCount.value);
+                
+                if(numberPattern.test(maxCount)){
+                    if(pString.length >0){
+                        if(maxCount > mString.length){
+                            //if(pString.length == 1){
+                                let padConcatPre= ""
+                                for(let i=0; i< (maxCount - mString.length); i++){
+                                    padConcatPre +=pString;
+                                }
+                                padConcatPre = padConcatPre+mString;
+                                outputPara.innerHTML = 'Pad Start String ---> <span>'+ padConcatPre +'</span> -- total pad string length: <span>'+ padConcatPre.length +'</span>';
+                            //}
+                            //else{
+                                //alert("Enter 1 string")
+                                // if(pString.length > 1){
+                                // alert(pString.length+mString.length)
+                                // if( maxCount > (pString.length+mString.length)){
+                                    
+                                // }
+                            //}
+                        }
+                        else{
+                            alert('The main string has already equals or exceeds the max length')
+                        }
+                    }
+                    else{
+                        alert('Enter pad string to prepend')
+                    }                    
+                }
+                else{
+                    alert('Enter Max Length as number');
+                }
+            }
+            else{
+                alert("Please enter main string")
+            }
+        }
+
+
+        function cusPadEnd(){
+            let mString = mainString.value.toLowerCase();
+            if(mString.length>0){
+                let pString = padString.value.toLowerCase();
+                let maxCount = Number(maxLenCount.value);
+                
+                if(numberPattern.test(maxCount)){
+                    if(pString.length >0){
+                        if(maxCount > mString.length){
+                            //if(pString.length == 1){
+                                let padConcatPost= ""
+                                for(let i=0; i< (maxCount - mString.length); i++){
+                                    padConcatPost +=pString;
+                                }
+                                padConcatPost = mString+padConcatPost;
+                                outputPara.innerHTML = 'Pad Start String ---> <span>'+ padConcatPost +'</span> -- total pad string length: <span>'+ padConcatPost.length +'</span>';
+                            //}
+                            //else{
+                                //alert("Enter 1 string")
+                                // if(pString.length > 1){
+                                // alert(pString.length+mString.length)
+                                // if( maxCount > (pString.length+mString.length)){
+                                    
+                                // }
+                            //}
+                        }
+                        else{
+                            alert('The main string has already equals or exceeds the max length')
+                        }
+                    }
+                    else{
+                        alert('Enter pad string to prepend')
+                    }                    
+                }
+                else{
+                    alert('Enter Max Length as number');
+                }
+            }
+            else{
+                alert("Please enter main string")
+            }
+        }
+
+        function cusStartWith(){
+            let mString = mainString.value.toLowerCase();
+            let vString = valString.value.toLowerCase();
+            if(mString.length>0){
+                if(vString.length <= mString.length){
+                    for(let chkStr = 0; chkStr<vString.length; chkStr++){
+                        
+                        if(mString[chkStr] != vString[chkStr]){
+                            startBoolean = false;
+                        }
+                        else{
+                            startBoolean = true;
+                        }
+                    }
+                }
+                outputPara.innerHTML = 'String startswith(<span>'+ vString +'</span>) ---> '+startBoolean 
+            }  
+            else{
+                alert("Please enter main string")
+            }                      
+                       
+        }
+
+        function cusEndsWith(){
+            let mString = mainString.value.toLowerCase();
+            let vString = valString.value.toLowerCase();
+            let startIndex = mString.length - vString.length;
+
+            if(mString.length>0){
+                if(vString.length <= mString.length){
+                    for(let chkStr = 0; chkStr<vString.length; chkStr++){
+                        
+                        if(mString[startIndex+chkStr] != vString[chkStr]){
+                            endBoolean = false;
+                        }
+                        else{
+                            endBoolean = true;
+                        }
+                    }
+                }            
+                outputPara.innerHTML = 'String startswith(<span>'+ vString +'</span>) ---> '+endBoolean
+            }
+            else{
+                alert("Please enter main string")
+            }                        
+        }
+    </script>
+</body>
+</html>
